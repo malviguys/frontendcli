@@ -7,7 +7,7 @@ import re
 
 
 @typechecked
-@dataclass()
+@dataclass(frozen=True, order=True)
 class Cost:
 	value_in_cents: int
 
