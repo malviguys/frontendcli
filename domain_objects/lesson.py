@@ -5,8 +5,8 @@ from typing import Any
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
 
-from user import Student
-from cost import Cost
+from domain_objects.user import Student
+from domain_objects.cost import Cost
 from validation.dataclasses import validate_dataclass
 
 @unique # Avoid to have aliases in the `Instrument` enum.
@@ -22,7 +22,7 @@ class Lesson:
 	lesson_name: str
 	teacher: str
 	instrument: Instrument
-	students: list(Student)
+	students: [Student]
 	date_time: datetime
 	duration: timedelta
 	cost: Cost
