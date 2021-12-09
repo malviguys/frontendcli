@@ -1,11 +1,23 @@
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
 class User:
-	pass
+	is_admin:bool
+
+	def login(self):
+		pass
+
+	def logout(self):
+		pass
+
 
 class Student(User):
-	pass
+	def book_lesson():
+		pass
 
-class Teacher(User):
-	pass
 
 class Admin(User):
-	pass
+	# TODO: What if the admin is redirected to the django admin page?
+	def create_lesson():
+		pass
