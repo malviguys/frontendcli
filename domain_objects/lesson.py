@@ -3,9 +3,11 @@ from dataclasses import InitVar, dataclass, field
 from enum import Enum, unique
 from typing import Any
 from typeguard import typechecked
+from valid8.entry_points_inline import validate
 
 from user import Student
 from cost import Cost
+from validation.dataclasses import validate_dataclass
 
 @unique # Avoid to have aliases in the `Instrument` enum.
 class Instrument(Enum):
@@ -15,7 +17,7 @@ class Instrument(Enum):
 	TRIANGLE = 3
 
 @typechecked
-@dataclass()
+@dataclass(frozen=True)
 class Lesson:
 	lesson_name: str
 	teacher: str
@@ -27,11 +29,18 @@ class Lesson:
 
 	create_key: InitVar[Any] = field(default=None)
 
-
 	__create_key = object()
 
-	def create(*args, **kwargs):
-		pass
+	def __post_init__(self, create_key):
+		validate('create_key', create_key, equals=self.__create_key)
+		validate_dataclass(self)
+
+	@staticmethod
+	def create(lesson_name=None, teacher=None, instrument=None, students = [], date_time=None, duration=None, cost=None) -> 'Lesson':
+		# validate('Lesson Arguments', args, min_len=6, max_len=6)
+		# for x in args:
+		# 	validate('Lesson Argument', x)
+		return Lesson(lesson_name, teacher, instrument, students, date_time, duration, cost, Lesson.__create_key)
 	
 	@property
 	def lesson_name(self): return self._lesson_name
