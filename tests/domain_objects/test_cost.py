@@ -48,3 +48,15 @@ def test_create_cost_value_in_cents():
 	c = Cost.create(100, 50)
 	assert c.value_in_cents == 10050
 
+
+def test_cost_str():
+	c = Cost.create(5279, 99)
+	cost_str = c.__str__()
+	assert cost_str == '5279.99'
+
+
+def test_cost_parse():
+	c_str = '8544.99'
+	c = Cost.parse(c_str)
+	assert c.__str__() == c_str
+

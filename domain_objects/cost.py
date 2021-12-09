@@ -21,7 +21,7 @@ class Cost:
 	__min_value_euros = 0
 	__min_value_cents = 0
 	# Pattern used for parsing
-	__parse_pattern = re.compile(r'(?P<euro>:\d{0,6})\.(?P<cents>:\d{2})')
+	__parse_pattern = re.compile(r'(?P<euro>\d{1,6})\.(?P<cents>\d{1,2})')
 
 	def __post_init__(self, create_key):
 		validate('create_key', create_key, equals=self.__create_key)
@@ -47,7 +47,7 @@ class Cost:
 	
 	@property
 	def cents(self) -> int:
-		return self.value_in_cents%100
+		return self.value_in_cents % 100
 	
 	@property
 	def euro(self) -> int:
