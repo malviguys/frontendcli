@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class User:
-	is_admin:bool
+	is_admin: bool
 
 	def login(self):
 		pass
@@ -13,11 +13,11 @@ class User:
 
 
 class Student(User):
-	def book_lesson():
+	def book_lesson(self):
 		pass
 
 
 class Admin(User):
 	# TODO: What if the admin is redirected to the django admin page?
-	def create_lesson():
+	def create_lesson(self):
 		pass
