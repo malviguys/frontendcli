@@ -70,6 +70,11 @@ class Lesson:
 								+ str(Lesson.__duration_min) + " and " + str(Lesson.__duration_max) + " hours!")
 		return Lesson(lesson_name, teacher, instrument, students, date_time, duration, cost, Lesson.__create_key)
 
+	def __str__(self) -> str:
+		return f'Lesson {self.lesson_name}: \n\tPresented By: {self.teacher} \n\tInstrument: {self.instrument.name} ' \
+				f'\n\tScheduled At: {self.date_time} \n\tDuration: {self.duration} hours \n\tCost: {self.cost.__str__()}€ ' \
+				f'\n\tRegistered Students: {self.students}'
+
 	@property
 	def lesson_name(self): return self._lesson_name
 	@property

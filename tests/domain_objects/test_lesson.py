@@ -122,3 +122,17 @@ def test_create_lesson_duration_fails_too_short(lesson):
         Lesson.create(lesson.lesson_name, lesson.teacher, lesson.instrument, lesson.students,
                       lesson.date_time, failing_duration, lesson.cost)
 
+
+def test_lesson_string():
+    lesson_name = "Drums 101"
+    teacher = "Mario Alviano"
+    instrument = Instrument.DRUM
+    students = []
+    date_time = datetime.datetime(year=2022, month=6, day=16, hour=14, minute=30)
+    duration = datetime.timedelta(hours=3)
+    cost = Cost.create(220, 80)
+    lesson = Lesson.create(lesson_name, teacher, instrument, students, date_time, duration, cost)
+    expected_string = f'Lesson {lesson_name}: \n\tPresented By: {teacher} \n\tInstrument: {instrument.name} ' \
+                        f'\n\tScheduled At: {date_time} \n\tDuration: {duration} hours \n\tCost: {cost.__str__()}€ ' \
+                        f'\n\tRegistered Students: {students}'
+    assert lesson.__str__() == expected_string
