@@ -11,9 +11,11 @@ from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
 
 
+# TODO: add validation!
+
 @typechecked
 @dataclass(frozen=True, order=True)
-class Description():
+class Description:
     value: str
 
     def __post_init__(self):
@@ -23,9 +25,10 @@ class Description():
     def __str__(self) -> str:
         return self.value
 
+
 @typechecked
 @dataclass(frozen=True, order=True)
-class Key():
+class Key:
     value: str
 
     def __post_init__(self):
@@ -38,7 +41,7 @@ class Key():
 
 @typechecked
 @dataclass(frozen=True)
-class Entry():
+class Entry:
     key: Key
     description: Description
     on_selected: Callable[[], None] = field(default=lambda: None)
@@ -48,13 +51,13 @@ class Entry():
         validate_dataclass(self)
     
     @staticmethod
-    def create(key: str, description: str, on_selected: Callable[[], None]=lambda: None, is_exit: bool=False) -> 'Entry':
+    def create(key: str, description: str, on_selected: Callable[[], None] = lambda: None, is_exit: bool = False) -> 'Entry':
         return Entry(Key(key), Description(description), on_selected, is_exit)
 
 
 @typechecked
 @dataclass(frozen=True)
-class Menu():
+class Menu:
     description: Description
     auto_select: Callable[[], None] = field(default=lambda: None)
     __entries: List[Entry] = field(default_factory=list, repr=False, init=False)
@@ -89,7 +92,7 @@ class Menu():
     def __select_from_input(self) -> bool:
         while True:
             try:
-                line = input('Insert your choosen entry:')
+                line = input('Insert your chosen entry:')
                 key = Key(line.strip())
                 entry = self.__key2entry[key]
                 entry.on_selected()
@@ -110,7 +113,7 @@ class Menu():
         __menu: Optional['Menu']
         __create_key = object()
 
-        def __init__(self, description: Description, auto_select: Callable[[], None]=lambda: None):
+        def __init__(self, description: Description, auto_select: Callable[[], None] = lambda: None):
             self.__menu = Menu(description, auto_select, self.__create_key)
         
         @staticmethod
@@ -124,20 +127,19 @@ class Menu():
         
         def build(self) -> 'Menu':
             validate('menu', self.__menu)
-            validate('menu.entries', self.__menu.has_exit(), equals=True)
+            validate('menu.entries', self.__menu._has_exit(), equals=True)
             return_value, self.__menu = self.__menu, None
             return return_value
 
-
     # define those operations into lambdas in the entries
-    def fetch_lessons(self, user:User):
+    def fetch_lessons(self, user: User):
         response = requests.get(url=f'{self.__API_SERVER_ADDRESS}/lessons')
         if response.status_code != 200:
             return None
         return response.json()
 
-    def book_lesson(self, lesson:Lesson, user:Student):
-        payload = {'name':lesson.lesson_name}
+    def book_lesson(self, lesson: Lesson, user: Student):
+        payload = {'name': lesson.lesson_name}
 
     def create_lesson(self, lesson:Lesson, user:Admin):
         pass
