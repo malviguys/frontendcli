@@ -17,6 +17,11 @@ def lesson():
     cost = Cost.parse('150.00')
     return Lesson.create(lesson_name, teacher, instrument, students, date_time, duration, cost)
 
+# TODO
+#     for special_char in ['\n', '\r', '*', '^', '$']:
+#         with pytest.raises(ValidationError):
+#             Description(special_char)
+
 
 def test_create_lesson_valid_name(lesson):
     lesson_name = 'Very-LongLessonNameForTestingPurposes 42'
