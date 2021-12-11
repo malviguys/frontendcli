@@ -16,10 +16,6 @@ class Student(User):
 	def book_lesson(self):
 		pass
 
-class Teacher(User):
-	def book_lesson():
-		pass
-
 
 class Admin(User):
 	# TODO: What if the admin is redirected to the django admin page?
