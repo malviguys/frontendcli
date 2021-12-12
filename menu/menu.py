@@ -11,8 +11,6 @@ from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
 
 
-# TODO: add validation!
-
 @typechecked
 @dataclass(frozen=True, order=True)
 class Description:
@@ -106,30 +104,6 @@ class Menu:
             is_exit = self.__select_from_input()
             if is_exit:
                 return
-    
-    @typechecked
-    @dataclass()
-    class Builder:
-        __menu: Optional['Menu']
-        __create_key = object()
-
-        def __init__(self, description: Description, auto_select: Callable[[], None] = lambda: None):
-            self.__menu = Menu(description, auto_select, self.__create_key)
-        
-        @staticmethod
-        def is_valid_key(key: Any) -> bool:
-            return key == Menu.Builder.__create_key
-        
-        def with_entry(self, value: Entry) -> 'Menu.Builder':
-            validate('menu', self.__menu)
-            self.__menu._add_entry(value, self.__create_key)
-            return self
-        
-        def build(self) -> 'Menu':
-            validate('menu', self.__menu)
-            validate('menu.entries', self.__menu._has_exit(), equals=True)
-            return_value, self.__menu = self.__menu, None
-            return return_value
 
     # define those operations into lambdas in the entries
     def fetch_lessons(self, user: User):
@@ -153,5 +127,29 @@ class Menu:
     def welcome(self):
         pass
 
-    def create():
+    def create(self):
         pass
+
+    @typechecked
+    @dataclass()
+    class Builder:
+        __menu: Optional['Menu']
+        __create_key = object()
+
+        def __init__(self, description: Description, auto_select: Callable[[], None] = lambda: None):
+            self.__menu = Menu(description, auto_select, self.__create_key)
+
+        @staticmethod
+        def is_valid_key(key: Any) -> bool:
+            return key == Menu.Builder.__create_key
+
+        def with_entry(self, value: Entry) -> 'Menu.Builder':
+            validate('menu', self.__menu)
+            self.__menu._add_entry(value, self.__create_key)
+            return self
+
+        def build(self) -> 'Menu':
+            validate('menu', self.__menu)
+            validate('menu.entries', self.__menu._has_exit(), equals=True)
+            return_value, self.__menu = self.__menu, None
+            return return_value
