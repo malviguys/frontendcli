@@ -5,7 +5,7 @@ from valid8 import validate
 import requests
 
 from domain_objects.lesson import Lesson
-from domain_objects.user import Admin, Student, User
+from domain_objects.user import Admin, Student, Teacher, User
 
 from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
@@ -141,13 +141,19 @@ class Menu:
     def book_lesson(self, lesson: Lesson, user: Student):
         payload = {'name': lesson.lesson_name}
 
-    def create_lesson(self, lesson:Lesson, user:Admin):
+    def create_lesson(self, lesson:Lesson, user:User):
+        if isinstance(user, Student):
+            return
         pass
 
-    def cancel_lesson(self, lesson:Lesson, user:Admin):
+    def cancel_lesson(self, lesson:Lesson, user:User):
+        if isinstance(user, Student):
+            return
         pass
 
     def modify_lesson(self, lesson:Lesson, user:Admin):
+        if isinstance(user, Student):
+            return
         pass
 
     def welcome(self):
