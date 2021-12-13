@@ -1,29 +1,33 @@
 import requests
+from attr import dataclass
+from typeguard import typechecked
+
 from domain_objects.user import Student, User
 from domain_objects.lesson import Lesson
-
+from validation.dataclasses import validate_dataclass
 
 API_SERVER_ADDRESS = 'http://localhost:8000/api/v1'
 
 
+@typechecked
+@dataclass(frozen=True)
 class Handler:
-    __user: User
+    user: User
 
-    @property
-    def user(self) -> User:
-        return self.__user
+    def __post_init__(self):
+        validate_dataclass(self)
 
     def fetch_lessons(self):
         payload = {'Token': self.user.token}
         # TODO: check url
-        response = requests.get(f'{API_SERVER_ADDRESS}/lessons', params = payload)
+        response = requests.get(f'{API_SERVER_ADDRESS}/lessons', params=payload)
         if response.status_code != 200:
             return None
         return response.json()
 
     def create_lesson(self, lesson: Lesson):
-        if isinstance(self.__user, Student):
-            return
+        if isinstance(self.user, Student):
+            return False
         payload = {
             'name': lesson.lesson_name,
             'instrument': lesson.instrument,
@@ -34,11 +38,14 @@ class Handler:
         }
         # TODO: check url
         response = requests.post(f'{API_SERVER_ADDRESS}/lessons', data=payload)
-    
+        if not (response.status_code == 200 or response.status_code == 204):
+            return False
+        return True
+
     def modify_lesson(self, lesson: Lesson):
-        if isinstance(self.__user, Student):
-            return
-        
+        if isinstance(self.user, Student):
+            return False
+
         payload = {
             'name': lesson.lesson_name,
             'instrument': lesson.instrument,
@@ -49,20 +56,32 @@ class Handler:
         }
         # TODO: check url
         response = requests.put(f'{API_SERVER_ADDRESS}/lessons', data=payload)
+        if not (response.status_code == 200 or response.status_code == 204):
+            return False
+        return True
 
     def cancel_lesson(self, lesson_name: str):
-        if isinstance(self.__user, Student):
-            return
+        if isinstance(self.user, Student):
+            return False
         payload = {'name': lesson_name}
         # TODO: check url
         response = requests.delete(f'{API_SERVER_ADDRESS}/lessons', params=payload)
+        if not (response.status_code == 200 or response.status_code == 204):
+            return False
+        return True
 
     def book_lesson(self, lesson_name: str):
         payload = {'name': lesson_name}
         # TODO: check url
         response = requests.post(f'{API_SERVER_ADDRESS}/booking/', data=payload)
+        if response.status_code != 200:
+            return False
+        return True
 
     def cancel_booking(self, lesson_name: str):
         payload = {'name': lesson_name}
         # TODO: check url
         response = requests.delete(f'{API_SERVER_ADDRESS}/booking/', params=payload)
+        if not (response.status_code == 200 or response.status_code == 204):
+            return False
+        return True
