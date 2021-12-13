@@ -2,10 +2,7 @@ from dataclasses import InitVar, dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Pattern
 from typeguard import typechecked
 from valid8 import validate
-import requests
 
-from domain_objects.lesson import Lesson
-from domain_objects.user import Admin, Student, Teacher, User
 
 from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
