@@ -11,8 +11,7 @@ def test_create_description():
 
 def test_description_str():
     text = 'This is my pretty description'
-    d = Description(text)
-    assert d.__str__() == text
+    assert str(Description(text)) == text
 
 
 def test_description_empty_fails():

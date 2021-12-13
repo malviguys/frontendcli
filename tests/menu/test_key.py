@@ -11,8 +11,7 @@ def test_create_key():
 
 def test_key_str():
     val = 'help'
-    k = Key(val)
-    assert k.__str__() == val
+    assert str(Key(val)) == val
 
 
 def test_key_empty_fails():
