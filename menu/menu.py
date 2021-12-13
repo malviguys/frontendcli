@@ -5,7 +5,7 @@ from valid8 import validate
 import requests
 
 from domain_objects.lesson import Lesson
-from domain_objects.user import Admin, Student, User
+from domain_objects.user import Admin, Student, Teacher, User
 
 from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
@@ -62,8 +62,6 @@ class Menu:
     __key2entry: Dict[Key, Entry] = field(default_factory=dict, repr=False, init=False)
     create_key: InitVar[Any] = field(default=None)
 
-    __API_SERVER_ADDRESS = ''
-
     def __post_init__(self, create_key: Any):
         validate('create_key', create_key, custom=Menu.Builder.is_valid_key)
         validate_dataclass(self)
@@ -104,32 +102,7 @@ class Menu:
             is_exit = self.__select_from_input()
             if is_exit:
                 return
-
-    # define those operations into lambdas in the entries
-    def fetch_lessons(self, user: User):
-        response = requests.get(url=f'{self.__API_SERVER_ADDRESS}/lessons')
-        if response.status_code != 200:
-            return None
-        return response.json()
-
-    def book_lesson(self, lesson: Lesson, user: Student):
-        payload = {'name': lesson.lesson_name}
-
-    def create_lesson(self, lesson:Lesson, user:Admin):
-        pass
-
-    def cancel_lesson(self, lesson:Lesson, user:Admin):
-        pass
-
-    def modify_lesson(self, lesson:Lesson, user:Admin):
-        pass
-
-    def welcome(self):
-        pass
-
-    def create(self):
-        pass
-
+    
     @typechecked
     @dataclass()
     class Builder:
