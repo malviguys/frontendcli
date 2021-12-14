@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import re
 
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
@@ -40,12 +41,11 @@ class User:
         return User(Username(username), token, is_admin)
 
 
-# TODO: What to define in the subclasses?
-
 @typechecked
 @dataclass(frozen=True, order=True)
 class Student(User):
     pass
+
 
 @typechecked
 @dataclass(frozen=True, order=True)
