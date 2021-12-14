@@ -1,4 +1,6 @@
 import datetime
+from traceback import print_exc
+
 import requests
 from typeguard import typechecked
 from domain_objects.lesson import Lesson
@@ -32,19 +34,25 @@ class App:
             .with_entry(Entry.create('0', 'Exit', on_selected=lambda: print(self.__salut), is_exit=True)) \
             .build()
 
-    @typechecked
-    def __do_login_as_student(self) -> 'Student':
+    def __do_login_as_student(self):
         print('Logging as a Student')
 
         # TODO: code duplication
         user_name = input(self.__insert_username_field)
         pwd = input(self.__insert_password_field)
 
+        print(user_name, pwd)
+
         payload = dict(username=user_name, password=pwd)
-        response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
+        token = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload).json()['key'] # TODO: change for everyone?
+
+        # TODO: what if credentials are wrong?
 
         # TODO: check if the key is taken correctly
-        user = Student(Username(user_name), response.json()['key'])
+        user = Student(Username(user_name), token)
+        #user = Student(Username(user_name), 'token')
+
+        print('Successfully logged in!')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -52,10 +60,9 @@ class App:
             .with_entry(Entry.create('1', 'Book a lesson', on_selected=lambda: self.__book_lesson())) \
             .with_entry(Entry.create('2', 'Cancel a booking', on_selected=lambda: self.__cancel_booking())) \
             .with_entry(Entry.create('0', 'Exit', on_selected=lambda: print(self.__salut), is_exit=True)) \
-            .build()
+            .build().run()
 
-    @typechecked
-    def __do_login_as_teacher(self) -> 'Teacher':
+    def __do_login_as_teacher(self):
         print('Logging as a Teacher')
 
         user_name = input(self.__insert_username_field)
@@ -66,6 +73,9 @@ class App:
 
         # TODO: check if the key is taken correctly
         user = Teacher(Username(user_name), response.json()['key'])
+        #user = Teacher(Username(user_name), 'maToken')
+
+        print('Successfully logged in!')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -74,10 +84,9 @@ class App:
             .with_entry(Entry.create('2', 'Modify a lesson', on_selected=lambda: self.__modify_lesson())) \
             .with_entry(Entry.create('3', 'Cancel a lesson', on_selected=lambda: self.__cancel_lesson())) \
             .with_entry(Entry.create('0', 'Exit', on_selected=lambda: print(self.__salut), is_exit=True)) \
-            .build()
+            .build().run()
 
-    @typechecked
-    def __do_login_as_admin(self) -> 'Admin':
+    def __do_login_as_admin(self):
         print('Logging as an Admin')
 
         user_name = input(self.__insert_username_field)
@@ -89,16 +98,19 @@ class App:
         # TODO: check if the key is taken correctly
         user = Admin(Username(user_name), response.json()['key'])
 
+        print('Successfully logged in!')  # TODO: as variable
+
         self.__handler = Handler(user)
 
         # TODO: Discuss on whether the `get admin page link` is useful
-        self.__menu = Menu.Builder(Description(), auto_select=lambda: self.__print_lessons()) \
+        # TODO: duplicate
+        self.__menu = Menu.Builder(Description(self.__app_name), auto_select=lambda: self.__print_lessons()) \
             .with_entry(Entry.create('1', 'Create a lesson', on_selected=lambda: self.__create_lesson())) \
             .with_entry(Entry.create('2', 'Modify a lesson', on_selected=lambda: self.__modify_lesson())) \
             .with_entry(Entry.create('3', 'Cancel a lesson', on_selected=lambda: self.__cancel_lesson())) \
             .with_entry(Entry.create('4', 'Get admin page link', on_selected=lambda: self.__get_admin_page())) \
             .with_entry(Entry.create('0', 'Exit', on_selected=lambda: print(self.__salut), is_exit=True)) \
-            .build()
+            .build().run()
 
     def __print_lessons(self) -> None:
         # TODO: do a better format
@@ -162,6 +174,7 @@ class App:
             self.__run()
         except Exception:
             print('Something went horribly wrong.')
+            #print_exc()
 
 
 def main():

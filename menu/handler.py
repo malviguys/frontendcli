@@ -1,3 +1,5 @@
+import json
+
 import requests
 from attr import dataclass
 from typeguard import typechecked
@@ -24,6 +26,12 @@ class Handler:
         if response.status_code != 200:
             return None
         return response.json()
+        # return json.loads('{"lessons": [{"id":1, "lesson_name":"Guitar With Mario", "teacher":"Mario Alviano", '
+        #                   '"instrument":"Instrument.GUITAR", "students":[{"name":"Claudio Lucisano"}, {"name":"Giada Gabriele"}], '
+        #                   '"date_time":"2021-16-12 14:30:00", "duration":"00:02:00", "cost":"100.00€"},'
+        #                   '{"id":2, "lesson_name":"Fun with the Triangle", "teacher":"Dr. Tri Angle", '
+        #                   '"instrument":"Instrument.TRIANGLE", "students":[{"name":"Paola Guarasci"}, {"name":"Kerstin Greifensteiner"}], '
+        #                   '"date_time":"2021-17-02 12:30:00", "duration":"00:03:30", "cost":"120.00€"}]}')
 
     def create_lesson(self, lesson: Lesson):
         if isinstance(self.user, Student):

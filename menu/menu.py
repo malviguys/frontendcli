@@ -1,4 +1,5 @@
 from dataclasses import InitVar, dataclass, field
+from traceback import print_exc
 from typing import Any, Callable, Dict, List, Optional, Pattern
 from typeguard import typechecked
 from valid8 import validate
@@ -92,6 +93,7 @@ class Menu:
                 return entry.is_exit
             except (KeyError, TypeError, ValueError):
                 print('Invalid selection. Please, try again.')
+                # print_exc()
     
     def run(self) -> None:
         while True:
