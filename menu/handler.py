@@ -1,7 +1,7 @@
 import json
 
 import requests
-from attr import dataclass
+from dataclasses import dataclass
 from typeguard import typechecked
 
 from domain_objects.user import Student, User
