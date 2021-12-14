@@ -41,7 +41,7 @@ class Lesson:
                                 + re.escape(str(__name_max_length - 1)) + r'})')
     __teacher_min_length = 5
     __teacher_max_length = 80
-    __teacher_pattern = re.compile(r'(?P<teacher>([a-zA-Z-]{2,8}\. ?){0,5}( ?[A-Z][a-z]+){2,80})')
+    __teacher_pattern = re.compile(r'(?P<teacher>([a-zA-Z-]{2,8}\. ?){0,5}( ?[A-Z][a-z]+){2,100})')
     __delta_time_min_weeks = 1
     __delta_time_max_weeks = 104
     __duration_min = 1

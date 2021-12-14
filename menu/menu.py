@@ -1,11 +1,9 @@
 from dataclasses import InitVar, dataclass, field
+from traceback import print_exc
 from typing import Any, Callable, Dict, List, Optional, Pattern
 from typeguard import typechecked
 from valid8 import validate
-import requests
 
-from domain_objects.lesson import Lesson
-from domain_objects.user import Admin, Student, Teacher, User
 
 from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
@@ -95,6 +93,7 @@ class Menu:
                 return entry.is_exit
             except (KeyError, TypeError, ValueError):
                 print('Invalid selection. Please, try again.')
+                # print_exc()
     
     def run(self) -> None:
         while True:
@@ -111,16 +110,16 @@ class Menu:
 
         def __init__(self, description: Description, auto_select: Callable[[], None] = lambda: None):
             self.__menu = Menu(description, auto_select, self.__create_key)
-        
+
         @staticmethod
         def is_valid_key(key: Any) -> bool:
             return key == Menu.Builder.__create_key
-        
+
         def with_entry(self, value: Entry) -> 'Menu.Builder':
             validate('menu', self.__menu)
             self.__menu._add_entry(value, self.__create_key)
             return self
-        
+
         def build(self) -> 'Menu':
             validate('menu', self.__menu)
             validate('menu.entries', self.__menu._has_exit(), equals=True)
