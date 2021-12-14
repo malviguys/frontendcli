@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import re
+from dataclasses import InitVar, dataclass, field
+from typing import Any, re
 
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
@@ -31,14 +31,18 @@ class User:
     username: Username
     token: str
     is_admin: bool = field(default=False)
+    create_key: InitVar[Any] = field(default=None)
 
-    def __post_init__(self):
+    __create_key = object()
+
+    def __post_init__(self, create_key):
+        validate('create_key', create_key, equals=self.__create_key)
         validate_dataclass(self)
 
     @staticmethod
     def create(username: str, token: str, is_admin: bool = False) -> 'User':
         # TODO: add token string validation
-        return User(Username(username), token, is_admin)
+        return User(Username(username), token, is_admin, User.__create_key)
 
 
 @typechecked
