@@ -18,11 +18,6 @@ def handler():
 
 
 @pytest.fixture()
-def student_handler():
-    return Handler(Student.create('Student', 'StudentToken'))  # TODO: change Username to be able to take string
-
-
-@pytest.fixture()
 def lesson():
     lesson_name = 'SSD'
     teacher = 'Mario Alviano'
@@ -92,10 +87,6 @@ def test_create_lesson_fails(handler, lesson):
     assert handler.create_lesson(lesson) is False
 
 
-def test_create_lesson_fails_student(student_handler, lesson):
-    assert student_handler.create_lesson(lesson) is False
-
-
 @responses.activate
 def test_modify_lesson(handler, lesson):
     responses.add(**{
@@ -120,10 +111,6 @@ def test_modify_lesson_fails(handler, lesson):
     assert handler.modify_lesson(lesson) is False
 
 
-def test_modify_lesson_fails_student(student_handler, lesson):
-    assert student_handler.modify_lesson(lesson) is False
-
-
 @responses.activate
 def test_cancel_lesson(handler, lesson):
     responses.add(**{
@@ -146,10 +133,6 @@ def test_cancel_lesson_fails(handler, lesson):
         'content_type': 'application/json',
     })
     assert handler.cancel_lesson(lesson.lesson_name) is False
-
-
-def test_cancel_lesson_fails_student(student_handler, lesson):
-    assert student_handler.cancel_lesson(lesson.lesson_name) is False
 
 
 @responses.activate
