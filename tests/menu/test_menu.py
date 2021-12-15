@@ -48,5 +48,5 @@ def test_menu_wrong_key(mocked_print, mocked_input):
         .with_entry(Entry.create('0', 'Exit', is_exit=True))\
         .build()
     menu.run()
-    mocked_print.assert_any_call('Invalid selection. Please, try again.')
+    mocked_print.assert_any_call('Invalid entry selected. Please, select a valid option.')
     mocked_input.assert_called()

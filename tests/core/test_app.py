@@ -150,10 +150,7 @@ def test_admin_login(mocked_print, mocked_input):
             mocked_print.assert_any_call('0-\tExit')
             mocked_print.assert_any_call('Logging as an Admin')
             mocked_print.assert_any_call('Successfully logged in!\n')
-            mocked_print.assert_any_call('1-\tCreate a lesson')
-            mocked_print.assert_any_call('2-\tModify a lesson')
-            mocked_print.assert_any_call('3-\tCancel a lesson')
-            mocked_print.assert_any_call('4-\tGet admin page link')
+            mocked_print.assert_any_call('1-\tGet admin page link')
             mocked_print.assert_any_call('0-\tExit')
             mocked_print.assert_any_call('Goodbye fella')
             mocked_input.assert_called()
@@ -176,7 +173,7 @@ def test_create_lesson(mocked_print, mocked_input):
             mocked_create_lesson.return_value = True
             with patch('builtins.open', mock_open()):
                 App().run()
-                mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for Guitar on 2022-03-08 10:00:00 for '
+                mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for GUITAR on 2022-03-08 10:00:00 for '
                                              '2.0 hours and 80.00€ created successfully!\n')
                 mocked_input.assert_called()
 
@@ -239,7 +236,7 @@ def test_modify_lesson(mocked_print, mocked_input):
             mocked_modify_lesson.return_value = True
             with patch('builtins.open', mock_open()):
                 App().run()
-                mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for Guitar successfully modified!\n')
+                mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for GUITAR successfully modified!\n')
                 mocked_input.assert_called()
 
 
