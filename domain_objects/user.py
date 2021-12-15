@@ -41,7 +41,7 @@ class User:
 
     @staticmethod
     def create(username: str, token: str, is_admin: bool = False) -> 'User':
-        # TODO: add token string validation
+        # TODO: add token string validation Need to talk w/ Paola
         return User(Username(username), token, is_admin, User.__create_key)
 
 

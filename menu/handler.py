@@ -10,6 +10,7 @@ from validation.dataclasses import validate_dataclass
 
 API_SERVER_ADDRESS = 'http://localhost:8000/api/v1'
 
+# TODO: Handle the response of the backend and eventual error. Display error messages and such
 
 @typechecked
 @dataclass(frozen=True)

@@ -91,9 +91,14 @@ class Menu:
                 entry = self.__key2entry[key]
                 entry.on_selected()
                 return entry.is_exit
-            except (KeyError, TypeError, ValueError):
-                print('Invalid selection. Please, try again.')
+            except KeyError:
+                print('Invalid entry selected. Please, select a valid option.')
                 # print_exc()
+            except TypeError:
+                print('An internal validation failed, please, report this error.')
+            except ValueError:
+                print('Invalid input provided. Please, try again.')
+
     
     def run(self) -> None:
         while True:
