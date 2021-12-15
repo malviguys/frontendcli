@@ -3,7 +3,9 @@ from traceback import print_exc
 
 import requests
 from typeguard import typechecked
-from domain_objects.lesson import Lesson
+
+from domain_objects.cost import Cost
+from domain_objects.lesson import Lesson, Instrument
 from domain_objects.user import Admin, Student, Teacher, User, Username
 from menu.handler import Handler, API_SERVER_ADDRESS
 from menu.menu import Description, Entry, Menu
@@ -58,8 +60,8 @@ class App:
 
         self.__login_menu = Menu.Builder(Description(self.__app_name), auto_select=lambda: ask_to_login()) \
             .with_entry(Entry.create('1', 'Log in as a Student', on_selected=lambda: self.__do_login_as_student(), is_exit=True)) \
-            .with_entry(Entry.create('2', 'Log in as a Teacher', on_selected=lambda: self.__do_login_as_teacher())) \
-            .with_entry(Entry.create('3', 'Log in as an Admin', on_selected=lambda: self.__do_login_as_admin())) \
+            .with_entry(Entry.create('2', 'Log in as a Teacher', on_selected=lambda: self.__do_login_as_teacher(), is_exit=True)) \
+            .with_entry(Entry.create('3', 'Log in as an Admin', on_selected=lambda: self.__do_login_as_admin(), is_exit=True)) \
             .with_entry(Entry.create('0', 'Exit', on_selected=lambda: print(self.__salut), is_exit=True)) \
             .build()
 
@@ -68,7 +70,7 @@ class App:
 
         user_name, token = do_login()
 
-        user = Student.create(Username(user_name), token)
+        user = Student.create(user_name, token)
 
         self.__handler = Handler(user)
 
@@ -82,7 +84,7 @@ class App:
         print('Logging as a Teacher')
 
         user_name, token = do_login()
-        user = Teacher.create(Username(user_name), token)
+        user = Teacher.create(user_name, token)
 
         self.__handler = Handler(user)
 
@@ -97,7 +99,7 @@ class App:
         print('Logging as an Admin')
 
         user_name, token = do_login()
-        user = Admin.create(Username(user_name), token)
+        user = Admin.create(user_name, token)
 
         self.__handler = Handler(user)
 
@@ -141,7 +143,7 @@ class App:
             self.__run()
         except Exception:
             print('Something went horribly wrong.')
-            #print_exc()
+            # print_exc()
 
 
 def main():

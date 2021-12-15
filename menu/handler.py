@@ -35,8 +35,6 @@ class Handler:
         #                   '"date_time":"2021-17-02 12:30:00", "duration":"00:03:30", "cost":"120.00€"}]}')
 
     def create_lesson(self, lesson: Lesson):
-        if isinstance(self.user, Student):
-            return False
         payload = {
             'name': lesson.lesson_name,
             'instrument': lesson.instrument,
@@ -53,9 +51,6 @@ class Handler:
         return True
 
     def modify_lesson(self, lesson: Lesson):
-        if isinstance(self.user, Student):
-            return False
-
         payload = {
             'name': lesson.lesson_name,
             'instrument': lesson.instrument,
@@ -72,8 +67,6 @@ class Handler:
         return True
 
     def cancel_lesson(self, lesson_name: str):
-        if isinstance(self.user, Student):
-            return False
         payload = {'name': lesson_name, 'Token': self.user.token}
         # TODO: check url w.r.t the backend
         response = requests.delete(f'{API_SERVER_ADDRESS}/lessons', params=payload)

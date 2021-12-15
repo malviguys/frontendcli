@@ -2,7 +2,7 @@ import re
 
 from datetime import datetime, timedelta
 from dataclasses import InitVar, dataclass, field
-from enum import Enum, unique
+from enum import Enum, unique, EnumMeta
 from typing import Any, List
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
@@ -52,7 +52,8 @@ class Lesson:
         validate_dataclass(self)
 
     @staticmethod
-    def create(lesson_name=None, teacher=None, instrument=None, students=None, date_time=None, duration=None, cost=None) -> 'Lesson':
+    def create(lesson_name=None, teacher=None, instrument=None, students=[], date_time=None, duration=None, cost=None) -> 'Lesson':
+        # TODO: add error messages
         m_name = Lesson.__name_pattern.fullmatch(lesson_name)
         validate('lesson_name', m_name)
         validate('teacher', len(teacher), min_value=Lesson.__teacher_min_length, max_value=Lesson.__teacher_max_length)
@@ -60,7 +61,9 @@ class Lesson:
         validate('teacher', m_teacher)
         # date_time should not be in past and should be at least 1 week in the future
         # and must not be more than 2 years in the future
-        if date_time.date() < (datetime.now() + timedelta(weeks=Lesson.__delta_time_min_weeks)).date()\
+        min_weeks_from_now = (datetime.now() + timedelta(weeks=Lesson.__delta_time_min_weeks))
+        date_min_from_now = datetime.strptime(str(min_weeks_from_now), "%Y-%m-%d %H:%M:%S.%f")
+        if date_time.date() < date_min_from_now.date()\
             or date_time.date() > (datetime.now() + timedelta(weeks=Lesson.__delta_time_max_weeks)).date():
             raise ValueError("New lessons must be scheduled at least one week and not more than two years from now!")
         if duration < timedelta(hours=Lesson.__duration_min)\

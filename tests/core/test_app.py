@@ -35,6 +35,13 @@ def mock_fetch_lessons():
     return Handler
 
 
+@pytest.fixture
+def mock_create_lesson():
+    Handler.create_lesson = Mock()
+    Handler.create_lesson.return_value = True
+    return Handler
+
+
 @responses.activate
 @patch('builtins.input', side_effect=['1', 'student', 'mypassword', '0'])
 @patch('builtins.print')
@@ -42,7 +49,7 @@ def test_student_login(mocked_print, mocked_input):
     responses.add(**{
         'method': responses.POST,
         'url': API_SERVER_ADDRESS + '/auth/login/',
-        'body': '{"key": "You\'re in"}',
+        'body': '{"key": "You are in"}',
         'status': 200,
         'content_type': 'application/json',
     })
@@ -55,7 +62,7 @@ def test_student_login(mocked_print, mocked_input):
             mocked_print.assert_any_call('3-\tLog in as an Admin')
             mocked_print.assert_any_call('0-\tExit')
             mocked_print.assert_any_call('Logging as a Student')
-            mocked_print.assert_any_call('Successfully logged in!')
+            mocked_print.assert_any_call('Successfully logged in!\n')
             mocked_print.assert_any_call('1-\tBook a lesson')
             mocked_print.assert_any_call('2-\tCancel a booking')
             mocked_print.assert_any_call('0-\tExit')
@@ -70,7 +77,7 @@ def test_teacher_login(mocked_print, mocked_input):
     responses.add(**{
         'method': responses.POST,
         'url': API_SERVER_ADDRESS + '/auth/login/',
-        'body': '{"key": "You\'re in"}',
+        'body': '{"key": "You are in"}',
         'status': 200,
         'content_type': 'application/json',
     })
@@ -82,7 +89,7 @@ def test_teacher_login(mocked_print, mocked_input):
             mocked_print.assert_any_call('3-\tLog in as an Admin')
             mocked_print.assert_any_call('0-\tExit')
             mocked_print.assert_any_call('Logging as a Teacher')
-            mocked_print.assert_any_call('Successfully logged in!')
+            mocked_print.assert_any_call('Successfully logged in!\n')
             mocked_print.assert_any_call('1-\tCreate a lesson')
             mocked_print.assert_any_call('2-\tModify a lesson')
             mocked_print.assert_any_call('3-\tCancel a lesson')
@@ -99,7 +106,7 @@ def test_admin_login(mocked_print, mocked_input):
     responses.add(**{
         'method': responses.POST,
         'url': API_SERVER_ADDRESS + '/auth/login/',
-        'body': '{"key": "You\'re in"}',
+        'body': '{"key": "You are in"}',
         'status': 200,
         'content_type': 'application/json',
     })
@@ -111,7 +118,7 @@ def test_admin_login(mocked_print, mocked_input):
             mocked_print.assert_any_call('3-\tLog in as an Admin')
             mocked_print.assert_any_call('0-\tExit')
             mocked_print.assert_any_call('Logging as an Admin')
-            mocked_print.assert_any_call('Successfully logged in!')
+            mocked_print.assert_any_call('Successfully logged in!\n')
             mocked_print.assert_any_call('1-\tCreate a lesson')
             mocked_print.assert_any_call('2-\tModify a lesson')
             mocked_print.assert_any_call('3-\tCancel a lesson')
@@ -120,5 +127,50 @@ def test_admin_login(mocked_print, mocked_input):
             mocked_print.assert_any_call('Goodbye fella')
             mocked_input.assert_called()
 
-# TODO: test different menus for student/teacher/admin
-# TODO: test http requests
+
+@responses.activate
+@patch('builtins.input', side_effect=['2', 'teacher', 'tchr', '1',
+                                      'My Lesson', 'Guitar', 'Myself Thatsit', '08-03-2022 10:00', '120', '80.00'])
+@patch('builtins.print')
+def test_create_lesson(mocked_print, mocked_input):
+    responses.add(**{
+        'method': responses.POST,
+        'url': API_SERVER_ADDRESS + '/auth/login/',
+        'body': '{"key": "You are in"}',
+        'status': 200,
+        'content_type': 'application/json',
+    })
+    with patch.object(Handler, 'fetch_lessons'):
+        with patch.object(Handler, 'create_lesson') as mocked_create_lesson:
+            mocked_create_lesson.return_value = True
+            with patch('builtins.open', mock_open()):
+                App().run()
+                mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for Guitar on 2022-03-08 10:00:00 for '
+                                             '2.0 hours and 80.00€ created successfully!\n')
+                mocked_input.assert_called()
+
+
+@responses.activate
+@patch('builtins.input', side_effect=['2', 'teacher', 'tchr', '1',
+                                      'My Lesson', 'Guitar', 'Myself Thatsit', '08-03-2022 10:00', '120', '80.00', '0'])
+@patch('builtins.print')
+def test_create_lesson_fails_from_backend(mocked_print, mocked_input):
+    responses.add(**{
+        'method': responses.POST,
+        'url': API_SERVER_ADDRESS + '/auth/login/',
+        'body': '{"key": "You are in"}',
+        'status': 200,
+        'content_type': 'application/json',
+    })
+    with patch.object(Handler, 'fetch_lessons'):
+        with patch.object(Handler, 'create_lesson') as mocked_create_lesson:
+            mocked_create_lesson.return_value = False
+            with patch('builtins.open', mock_open()):
+                App().run()
+                mocked_print.assert_any_call('The lesson could not be created!\n')
+                mocked_print.assert_any_call('Goodbye fella')
+                mocked_input.assert_called()
+
+
+def test_modify_lesson():
+    pass
