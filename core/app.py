@@ -121,15 +121,24 @@ class App:
 
     def __cancel_lesson(self):
         lesson_name = input("Insert the name of the lesson to delete:")
-        self.__handler.cancel_lesson(lesson_name)
+        if self.__handler.cancel_lesson(lesson_name):
+            print(f'Lesson "{lesson_name}" successfully cancelled!\n')
+        else:
+            print('Could not cancel lesson!\n')
 
     def __book_lesson(self) -> None:
         lesson_name = input("Insert the name of the lesson to book for:")
-        self.__handler.book_lesson(lesson_name)
+        if self.__handler.book_lesson(lesson_name):
+            print(f'Successfully booked for lesson "{lesson_name}"!\n')
+        else:
+            print("Could not make booking for this lesson!\n")
 
     def __cancel_booking(self):
         lesson_name = input("Insert the name of the lesson to delete the reservation:")
-        self.__handler.cancel_booking(lesson_name)
+        if self.__handler.cancel_booking(lesson_name):
+            print(f'Successfully cancelled booking for "{lesson_name}"!\n')
+        else:
+            print("Could not cancel your booking!\n")
 
     def __get_admin_page(self):
         print(f'Admin page: {ADMIN_PAGE}')
