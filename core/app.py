@@ -47,10 +47,10 @@ class App:
         # TODO: check response code for error in credentials
         token = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload).json()['key']  # TODO: change for everyone?
 
-        user = Student(Username(user_name), token)
+        user = Student.create(user_name, token)
         #user = Student(Username(user_name), 'token')
 
-        print('Successfully logged in!')  # TODO: as variable
+        print('Successfully logged in!\n')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -67,13 +67,13 @@ class App:
         pwd = input(self.__insert_password_field)
 
         payload = dict(username=user_name, password=pwd)
-        #response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
+        response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
 
         # TODO: check if the key is taken correctly
-        #user = Teacher(Username(user_name), response.json()['key'])
-        user = Teacher(Username(user_name), 'maToken')
+        user = Teacher.create(user_name, response.json()['key'])
+        #user = Teacher.create(user_name, 'maToken')
 
-        print('Successfully logged in!')  # TODO: as variable
+        print('Successfully logged in!\n')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -94,9 +94,9 @@ class App:
         response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
 
         # TODO: check if the key is taken correctly
-        user = Admin(Username(user_name), response.json()['key'])
+        user = Admin.create(user_name, response.json()['key'])
 
-        print('Successfully logged in!')  # TODO: as variable
+        print('Successfully logged in!\n')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -136,7 +136,7 @@ class App:
                     f'Lesson "{name}" with {teacher} for {instrument} on {date_time} for '
                     f'{duration.seconds / 60 / 60} hours and {cost}€ created successfully!\n')
             else:
-                print('The lesson could not be created!')
+                print('The lesson could not be created!\n')
         else:
             print("Sorry, the given instrument was not correct!")
         # TODO: what if it could not be created?
