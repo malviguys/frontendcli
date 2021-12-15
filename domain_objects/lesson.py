@@ -53,7 +53,6 @@ class Lesson:
 
     @staticmethod
     def create(lesson_name=None, teacher=None, instrument=None, students=None, date_time=None, duration=None, cost=None) -> 'Lesson':
-        # TODO: add error messages
         m_name = Lesson.__name_pattern.fullmatch(lesson_name)
         validate('lesson_name', m_name)
         validate('teacher', len(teacher), min_value=Lesson.__teacher_min_length, max_value=Lesson.__teacher_max_length)
