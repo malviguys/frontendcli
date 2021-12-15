@@ -50,3 +50,32 @@ def test_menu_wrong_key(mocked_print, mocked_input):
     menu.run()
     mocked_print.assert_any_call('Invalid entry selected. Please, select a valid option.')
     mocked_input.assert_called()
+
+
+def dummy_function(exception):
+    raise exception
+
+
+@patch('builtins.input', side_effect=['1', '0'])
+@patch('builtins.print')
+def test_menu_invalid_input(mocked_print, mocked_input):
+    menu = Menu.Builder(Description('a description')) \
+        .with_entry(Entry.create('1', 'My entry', on_selected=lambda: dummy_function(ValueError()))) \
+        .with_entry(Entry.create('0', 'Exit', is_exit=True)) \
+        .build()
+    menu.run()
+    mocked_print.assert_any_call('Invalid input provided. Please, try again.')
+    mocked_input.assert_called()
+
+
+@patch('builtins.input', side_effect=['1', '0'])
+@patch('builtins.print')
+def test_menu_type_error(mocked_print, mocked_input):
+    menu = Menu.Builder(Description('a description')) \
+        .with_entry(Entry.create('1', 'My entry', on_selected=lambda: dummy_function(TypeError()))) \
+        .with_entry(Entry.create('0', 'Exit', is_exit=True)) \
+        .build()
+    menu.run()
+    mocked_print.assert_any_call('An internal validation failed. Please, report this error.')
+    mocked_input.assert_called()
+

@@ -95,7 +95,7 @@ class Menu:
                 print('Invalid entry selected. Please, select a valid option.')
                 # print_exc()
             except TypeError:
-                print('An internal validation failed, please, report this error.')
+                print('An internal validation failed. Please, report this error.')
             except ValueError:
                 print('Invalid input provided. Please, try again.')
 
