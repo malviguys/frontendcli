@@ -130,7 +130,7 @@ def test_admin_login(mocked_print, mocked_input):
 
 @responses.activate
 @patch('builtins.input', side_effect=['2', 'teacher', 'tchr', '1',
-                                      'My Lesson', 'Guitar', 'Myself Thatsit', '08-03-2022 10:00', '120', '80.00', '0'])
+                                      'My Lesson', 'Guitar', 'Myself Thatsit', '08-03-2022 10:00', '120', '80.00'])
 @patch('builtins.print')
 def test_create_lesson(mocked_print, mocked_input):
     responses.add(**{
@@ -140,13 +140,14 @@ def test_create_lesson(mocked_print, mocked_input):
         'status': 200,
         'content_type': 'application/json',
     })
-    with patch.object(Handler, 'create_lesson'):
-        with patch('builtins.open', mock_open()):
-            App().run()
-            mocked_print.assert_any_call(f'Lesson "My Lesson" with Myself Thatsit for Guitar on 2022-03-08 10:00:00 '
-                                         f'for 2.0 hours and 80.00€ created successfully!\n')
-            mocked_print.assert_any_call('Goodbye fella')
-            mocked_input.assert_called()
+    with patch.object(Handler, 'fetch_lessons'):
+        with patch.object(Handler, 'create_lesson') as mocked_create_lesson:
+            mocked_create_lesson.return_value = True
+            with patch('builtins.open', mock_open()):
+                App().run()
+                mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for Guitar on 2022-03-08 10:00:00 for '
+                                             '2.0 hours and 80.00€ created successfully!\n')
+                mocked_input.assert_called()
 
 
 @responses.activate
@@ -161,12 +162,15 @@ def test_create_lesson_fails_from_backend(mocked_print, mocked_input):
         'status': 200,
         'content_type': 'application/json',
     })
-    with patch.object(Handler, 'create_lesson') as mocked_create_lesson:
-        mocked_create_lesson.return_value = False
-        with patch('builtins.open', mock_open()):
-            App().run()
-            mocked_print.assert_any_call('The lesson could not be created!\n')
-            mocked_print.assert_any_call('Goodbye fella')
-            mocked_input.assert_called()
+    with patch.object(Handler, 'fetch_lessons'):
+        with patch.object(Handler, 'create_lesson') as mocked_create_lesson:
+            mocked_create_lesson.return_value = False
+            with patch('builtins.open', mock_open()):
+                App().run()
+                mocked_print.assert_any_call('The lesson could not be created!\n')
+                mocked_print.assert_any_call('Goodbye fella')
+                mocked_input.assert_called()
 
 
+def test_modify_lesson():
+    pass

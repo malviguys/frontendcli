@@ -181,7 +181,7 @@ class App:
             self.__run()
         except Exception:
             print('Something went horribly wrong.')
-            print_exc()
+            # print_exc()
 
 
 def main():

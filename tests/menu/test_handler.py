@@ -19,7 +19,7 @@ def handler():
 
 @pytest.fixture()
 def student_handler():
-    return Handler(Student(Username('Student'), 'StudentToken'))  # TODO: change Username to be able to take string
+    return Handler(Student.create('Student', 'StudentToken'))  # TODO: change Username to be able to take string
 
 
 @pytest.fixture()
