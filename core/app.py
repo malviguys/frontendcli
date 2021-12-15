@@ -138,7 +138,7 @@ class App:
             else:
                 print('The lesson could not be created!\n')
         else:
-            print("Sorry, the given instrument was not correct!")
+            print("Sorry, the given instrument was not correct!\n")
         # TODO: what if it could not be created?
 
     def __modify_lesson(self):
@@ -152,22 +152,39 @@ class App:
                                       year=int(date_split.split('-')[2]), hour=int(time_split.split(':')[0]),
                                       minute=int(time_split.split(':')[1]))
         duration = datetime.timedelta(minutes=int(input("Insert the duration (in minutes) of the lesson:")))
-        cost = input("Insert the cost of the lesson")
-        lesson = Lesson.create(name, teacher, instrument, date_time=date_time, duration=duration, cost=cost)
+        cost = input("Insert the cost of the lesson: ~ format: {00.00} ~")
+        if any(x for x in Instrument if x.name == instrument.upper()):
+            lesson = Lesson.create(name, teacher, Instrument[instrument.upper()], date_time=date_time,
+                                   duration=duration, cost=Cost.parse(cost))
 
-        self.__handler.modify_lesson(lesson)
+            if self.__handler.modify_lesson(lesson):
+                print(
+                    f'Lesson "{name}" with {teacher} for {instrument} successfully modified!\n')
+            else:
+                print('The lesson could not be modified!\n')
+        else:
+            print("Sorry, the given instrument was not correct!\n")
 
     def __cancel_lesson(self):
         lesson_name = input("Insert the name of the lesson to delete:")
-        self.__handler.cancel_lesson(lesson_name)
+        if self.__handler.cancel_lesson(lesson_name):
+            print(f'Lesson "{lesson_name}" successfully cancelled!\n')
+        else:
+            print('Could not cancel lesson!\n')
 
     def __book_lesson(self) -> None:
         lesson_name = input("Insert the name of the lesson to book for:")
-        self.__handler.book_lesson(lesson_name)
+        if self.__handler.book_lesson(lesson_name):
+            print(f'Successfully booked for lesson "{lesson_name}"!\n')
+        else:
+            print("Could not make booking for this lesson!\n")
 
     def __cancel_booking(self):
         lesson_name = input("Insert the name of the lesson to delete the reservation:")
-        self.__handler.cancel_booking(lesson_name)
+        if self.__handler.cancel_booking(lesson_name):
+            print(f'Successfully cancelled booking for "{lesson_name}"!\n')
+        else:
+            print("Could not cancel your booking!\n")
 
     def __get_admin_page(self):
         print(f'Admin page: {ADMIN_PAGE}')
