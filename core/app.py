@@ -1,8 +1,6 @@
 import datetime
-from traceback import print_exc
 
 import requests
-from typeguard import typechecked
 
 from domain_objects.cost import Cost
 from domain_objects.lesson import Lesson, Instrument
@@ -65,7 +63,7 @@ class App:
             response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
 
             if response.status_code != requests.codes.ok:
-                print("Invalid credential, please try again.")
+                print("Invalid credential, please try again.\n")
                 continue
 
             token = response.json()['key']
@@ -173,7 +171,6 @@ class App:
             self.__run()
         except Exception:
             print('Something went horribly wrong.')
-            # print_exc()
 
 
 def main():

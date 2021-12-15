@@ -4,7 +4,7 @@ from unittest.mock import patch, Mock, mock_open
 import pytest
 import responses
 
-from core.app import App
+from core.app import App, ADMIN_PAGE
 from menu.handler import Handler, API_SERVER_ADDRESS
 
 
@@ -398,3 +398,40 @@ def test_cancel_booking_fails(mocked_print, mocked_input):
                 App().run()
                 mocked_print.assert_any_call('Could not cancel your booking!\n')
                 mocked_input.assert_called()
+
+
+@responses.activate
+@patch('builtins.input', side_effect=['3', 'admin', 'admin', '1'])
+@patch('builtins.print')
+def test_get_admin_page(mocked_print, mocked_input):
+    responses.add(**{
+        'method': responses.POST,
+        'url': API_SERVER_ADDRESS + '/auth/login/',
+        'body': '{"key": "You are in"}',
+        'status': 200,
+        'content_type': 'application/json',
+    })
+
+    with patch.object(Handler, 'fetch_lessons'):
+        with patch('builtins.open', mock_open()):
+            App().run()
+            mocked_print.assert_any_call(f'Admin page: {ADMIN_PAGE}')
+            mocked_input.assert_called()
+
+
+@responses.activate
+@patch('builtins.input', side_effect=['3', 'admin', 'admin'])
+@patch('builtins.print')
+def test_invalid_credentials(mocked_print, mocked_input):
+    responses.add(**{
+        'method': responses.POST,
+        'url': API_SERVER_ADDRESS + '/auth/login/',
+        'body': '{"UNAUTHENTICATED": "You are NOT in"}',
+        'status': 401,
+        'content_type': 'application/json',
+    })
+
+    with patch('builtins.open', mock_open()):
+        App().run()
+        mocked_print.assert_any_call('Invalid credential, please try again.\n')
+        mocked_input.assert_called()
