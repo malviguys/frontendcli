@@ -1,7 +1,7 @@
 import json
 
 import requests
-from attr import dataclass
+from dataclasses import dataclass
 from typeguard import typechecked
 
 from domain_objects.user import Student, User
@@ -21,7 +21,7 @@ class Handler:
 
     def fetch_lessons(self):
         payload = {'Token': self.user.token}
-        # TODO: check url
+        # TODO: check url w.r.t the backend
         response = requests.get(f'{API_SERVER_ADDRESS}/lessons', params=payload)
         if response.status_code != 200:
             return None
@@ -43,8 +43,9 @@ class Handler:
             'date_time': lesson.date_time,
             'duration': lesson.duration,
             'cost': lesson.cost,
+            'Token': self.user.token,
         }
-        # TODO: check url
+        # TODO: check url w.r.t the backend
         response = requests.post(f'{API_SERVER_ADDRESS}/lessons', data=payload)
         if not (response.status_code == 200 or response.status_code == 204):
             return False
@@ -61,8 +62,9 @@ class Handler:
             'date_time': lesson.date_time,
             'duration': lesson.duration,
             'cost': lesson.cost,
+            'Token': self.user.token,
         }
-        # TODO: check url
+        # TODO: check url w.r.t the backend
         response = requests.put(f'{API_SERVER_ADDRESS}/lessons', data=payload)
         if not (response.status_code == 200 or response.status_code == 204):
             return False
@@ -71,24 +73,24 @@ class Handler:
     def cancel_lesson(self, lesson_name: str):
         if isinstance(self.user, Student):
             return False
-        payload = {'name': lesson_name}
-        # TODO: check url
+        payload = {'name': lesson_name, 'Token': self.user.token}
+        # TODO: check url w.r.t the backend
         response = requests.delete(f'{API_SERVER_ADDRESS}/lessons', params=payload)
         if not (response.status_code == 200 or response.status_code == 204):
             return False
         return True
 
     def book_lesson(self, lesson_name: str):
-        payload = {'name': lesson_name}
-        # TODO: check url
+        payload = {'name': lesson_name, 'Token': self.user.token}
+        # TODO: check url w.r.t the backend
         response = requests.post(f'{API_SERVER_ADDRESS}/booking/', data=payload)
         if response.status_code != 200:
             return False
         return True
 
     def cancel_booking(self, lesson_name: str):
-        payload = {'name': lesson_name}
-        # TODO: check url
+        payload = {'name': lesson_name, 'Token': self.user.token}
+        # TODO: check url w.r.t the backend
         response = requests.delete(f'{API_SERVER_ADDRESS}/booking/', params=payload)
         if not (response.status_code == 200 or response.status_code == 204):
             return False
