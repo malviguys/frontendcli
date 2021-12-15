@@ -9,7 +9,7 @@ from validation.dataclasses import validate_dataclass
 from validation.regex import pattern
 
 
-@typechecked
+# @typechecked
 @dataclass(frozen=True, order=True)
 class Description:
     value: str
@@ -22,7 +22,7 @@ class Description:
         return self.value
 
 
-@typechecked
+# @typechecked
 @dataclass(frozen=True, order=True)
 class Key:
     value: str
@@ -35,7 +35,7 @@ class Key:
         return self.value
 
 
-@typechecked
+# @typechecked
 @dataclass(frozen=True)
 class Entry:
     key: Key
@@ -51,7 +51,7 @@ class Entry:
         return Entry(Key(key), Description(description), on_selected, is_exit)
 
 
-@typechecked
+# @typechecked
 @dataclass(frozen=True)
 class Menu:
     description: Description
@@ -91,12 +91,15 @@ class Menu:
                 entry = self.__key2entry[key]
                 entry.on_selected()
                 return entry.is_exit
-            except KeyError:
+            except KeyError as e:
+                print("KEY ERROR MENU ", e)
                 print('Invalid entry selected. Please, select a valid option.')
                 # print_exc()
-            except TypeError:
+            except TypeError as e:
+                print("TYPE ERROR MENU ", e)
                 print('An internal validation failed. Please, report this error.')
-            except ValueError:
+            except ValueError as e:
+                print("VALUE ERROR MENU ", e)
                 print('Invalid input provided. Please, try again.')
 
     
@@ -107,7 +110,7 @@ class Menu:
             if is_exit:
                 return
     
-    @typechecked
+    # @typechecked
     @dataclass()
     class Builder:
         __menu: Optional['Menu']

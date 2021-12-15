@@ -20,7 +20,7 @@ class Instrument(Enum):
     TRIANGLE = 3
 
 
-@typechecked
+# @typechecked
 @dataclass(frozen=True)
 class Lesson:
     _lesson_name: str
@@ -39,9 +39,10 @@ class Lesson:
     __name_pattern = re.compile(r'(?P<lesson_name>^[a-zA-Z][a-zA-Z\d -]{'
                                 + re.escape(str(__name_min_length - 1)) + r','
                                 + re.escape(str(__name_max_length - 1)) + r'})')
-    __teacher_min_length = 5
+    __teacher_min_length = 1
     __teacher_max_length = 80
-    __teacher_pattern = re.compile(r'(?P<teacher>([a-zA-Z-]{2,8}\. ?){0,5}( ?[A-Z][a-z]+){2,100})')
+    # __teacher_pattern = re.compile(r'(?P<teacher>([a-zA-Z-]{1,8}\. ?){0,5}( ?[A-Z][a-z]+){2,100})')
+    # __teacher_pattern = re.compile(r'(?P<teacher>([a-zA-Z-]{1,8})')
     __delta_time_min_weeks = 1
     __delta_time_max_weeks = 104
     __duration_min = 1
@@ -57,8 +58,8 @@ class Lesson:
         m_name = Lesson.__name_pattern.fullmatch(lesson_name)
         validate('lesson_name', m_name)
         validate('teacher', len(teacher), min_value=Lesson.__teacher_min_length, max_value=Lesson.__teacher_max_length)
-        m_teacher = Lesson.__teacher_pattern.fullmatch(teacher)
-        validate('teacher', m_teacher)
+        # m_teacher = Lesson.__teacher_pattern.fullmatch(teacher)
+        validate('teacher', teacher)
         # date_time should not be in past and should be at least 1 week in the future
         # and must not be more than 2 years in the future
         min_weeks_from_now = (datetime.now() + timedelta(weeks=Lesson.__delta_time_min_weeks))

@@ -6,7 +6,7 @@ from validation.dataclasses import validate_dataclass
 import re
 
 
-@typechecked
+# @typechecked
 @dataclass(frozen=True, order=True)
 class Cost:
 	value_in_cents: int

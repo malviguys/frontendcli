@@ -1,5 +1,4 @@
 import datetime
-
 import requests
 
 from domain_objects.cost import Cost
@@ -34,7 +33,9 @@ class App:
 
     def __setup_lesson(self):
         name = input("Insert the name of the lesson:")
-        instrument = input("Insert the instrument that'll be studied:")
+        # instrument = input("Insert the instrument that'll be studied:")
+        # instrument = { "id": 1 }
+        instrument = Instrument.GUITAR
         teacher = input("Insert the teacher of the lesson:")
         user_dt_input = input("Insert the date and the time of the lesson: ~ format: {DD-MM-YYYY hh:mm} ~")
         date_split = user_dt_input.split(' ')[0]
@@ -44,8 +45,10 @@ class App:
                                       minute=int(time_split.split(':')[1]))
         duration = datetime.timedelta(minutes=int(input("Insert the duration (in minutes) of the lesson:")))
         cost = input("Insert the cost of the lesson: ~ format: {00.00} ~")
-        if any(x for x in Instrument if x.name == instrument.upper()):
-            lesson = Lesson.create(name, teacher, Instrument[instrument.upper()], date_time=date_time,
+        print(f'{name}, {instrument.name}, {teacher}, {date_time}, {duration}, {cost}')
+        
+        if any(x for x in Instrument if x == instrument):
+            lesson = Lesson.create(name, teacher, instrument, date_time=date_time,
                                    duration=duration, cost=Cost.parse(cost))
             return lesson
         else:
@@ -61,7 +64,8 @@ class App:
             payload = dict(username=user_name, password=pwd)
 
             response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
-
+            print(response.status_code)
+            print(requests.codes.ok)
             if response.status_code != requests.codes.ok:
                 print("Invalid credential, please try again.\n")
                 continue
@@ -139,9 +143,9 @@ class App:
                 print('The lesson could not be modified!\n')
 
     def __cancel_lesson(self):
-        lesson_name = input("Insert the name of the lesson to delete:")
-        if self.__handler.cancel_lesson(lesson_name):
-            print(f'Lesson "{lesson_name}" successfully cancelled!\n')
+        lesson_id = input("Insert the id of the lesson to delete:")
+        if self.__handler.cancel_lesson(lesson_id):
+            print(f'Lesson "{lesson_id}" successfully cancelled!\n')
         else:
             print('Could not cancel lesson!\n')
 
@@ -169,7 +173,8 @@ class App:
     def run(self) -> None:
         try:
             self.__run()
-        except Exception:
+        except Exception as e:
+            print(e)
             print('Something went horribly wrong.')
 
 
