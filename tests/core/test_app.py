@@ -35,6 +35,13 @@ def mock_fetch_lessons():
     return Handler
 
 
+@pytest.fixture
+def mock_create_lesson():
+    Handler.create_lesson = Mock()
+    Handler.create_lesson.return_value = True
+    return Handler
+
+
 @responses.activate
 @patch('builtins.input', side_effect=['1', 'student', 'mypassword', '0'])
 @patch('builtins.print')
@@ -120,5 +127,17 @@ def test_admin_login(mocked_print, mocked_input):
             mocked_print.assert_any_call('Goodbye fella')
             mocked_input.assert_called()
 
-# TODO: test different menus for student/teacher/admin
-# TODO: test http requests
+
+@responses.activate
+@patch('builtins.input', side_effect=['2', 'teacher', 'tchr', '1',
+                                      'My Lesson', 'Guitar', 'Myself Thatsit', '08-03-2022 10:00', '120', '80.00', '0'])
+@patch('builtins.print')
+def test_create_lesson(mocked_print, mocked_input):
+    with patch.object(Handler, 'create_lesson'):
+        with patch('builtins.open', mock_open()):
+            App().run()
+            mocked_print.assert_any_call(f'Lesson "My Lesson" with Myself Thatsit for Guitar on 2022-03-08 10:00:00 '
+                                         f'for 2.0 hours and 80.00€ created successfully!\n')
+            mocked_print.assert_any_call('Goodbye fella')
+            mocked_input.assert_called()
+
