@@ -3,7 +3,9 @@ from traceback import print_exc
 
 import requests
 from typeguard import typechecked
-from domain_objects.lesson import Lesson
+
+from domain_objects.cost import Cost
+from domain_objects.lesson import Lesson, Instrument
 from domain_objects.user import Admin, Student, Teacher, User, Username
 from menu.handler import Handler, API_SERVER_ADDRESS
 from menu.menu import Description, Entry, Menu
@@ -29,8 +31,8 @@ class App:
 
         self.__login_menu = Menu.Builder(Description(self.__app_name), auto_select=lambda: ask_to_login()) \
             .with_entry(Entry.create('1', 'Log in as a Student', on_selected=lambda: self.__do_login_as_student(), is_exit=True)) \
-            .with_entry(Entry.create('2', 'Log in as a Teacher', on_selected=lambda: self.__do_login_as_teacher())) \
-            .with_entry(Entry.create('3', 'Log in as an Admin', on_selected=lambda: self.__do_login_as_admin())) \
+            .with_entry(Entry.create('2', 'Log in as a Teacher', on_selected=lambda: self.__do_login_as_teacher(), is_exit=True)) \
+            .with_entry(Entry.create('3', 'Log in as an Admin', on_selected=lambda: self.__do_login_as_admin(), is_exit=True)) \
             .with_entry(Entry.create('0', 'Exit', on_selected=lambda: print(self.__salut), is_exit=True)) \
             .build()
 
@@ -45,10 +47,10 @@ class App:
         # TODO: check response code for error in credentials
         token = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload).json()['key']  # TODO: change for everyone?
 
-        user = Student(Username(user_name), token)
+        user = Student.create(user_name, token)
         #user = Student(Username(user_name), 'token')
 
-        print('Successfully logged in!')  # TODO: as variable
+        print('Successfully logged in!\n')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -68,10 +70,10 @@ class App:
         response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
 
         # TODO: check if the key is taken correctly
-        user = Teacher(Username(user_name), response.json()['key'])
-        #user = Teacher(Username(user_name), 'maToken')
+        user = Teacher.create(user_name, response.json()['key'])
+        #user = Teacher.create(user_name, 'maToken')
 
-        print('Successfully logged in!')  # TODO: as variable
+        print('Successfully logged in!\n')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -92,9 +94,9 @@ class App:
         response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
 
         # TODO: check if the key is taken correctly
-        user = Admin(Username(user_name), response.json()['key'])
+        user = Admin.create(user_name, response.json()['key'])
 
-        print('Successfully logged in!')  # TODO: as variable
+        print('Successfully logged in!\n')  # TODO: as variable
 
         self.__handler = Handler(user)
 
@@ -125,10 +127,19 @@ class App:
                                       year=int(date_split.split('-')[2]), hour=int(time_split.split(':')[0]),
                                       minute=int(time_split.split(':')[1]))
         duration = datetime.timedelta(minutes=int(input("Insert the duration (in minutes) of the lesson:")))
-        cost = input("Insert the cost of the lesson")
-        lesson = Lesson.create(name, teacher, instrument, date_time, duration, cost)
+        cost = input("Insert the cost of the lesson: ~ format: {00.00} ~")
+        if any(x for x in Instrument if x.name == instrument.upper()):
+            lesson = Lesson.create(name, teacher, Instrument[instrument.upper()], date_time=date_time, duration=duration, cost=Cost.parse(cost))
 
-        self.__handler.create_lesson(lesson)
+            if self.__handler.create_lesson(lesson):
+                print(
+                    f'Lesson "{name}" with {teacher} for {instrument} on {date_time} for '
+                    f'{duration.seconds / 60 / 60} hours and {cost}€ created successfully!\n')
+            else:
+                print('The lesson could not be created!\n')
+        else:
+            print("Sorry, the given instrument was not correct!")
+        # TODO: what if it could not be created?
 
     def __modify_lesson(self):
         name = input("Insert the name of the lesson:")
@@ -142,7 +153,7 @@ class App:
                                       minute=int(time_split.split(':')[1]))
         duration = datetime.timedelta(minutes=int(input("Insert the duration (in minutes) of the lesson:")))
         cost = input("Insert the cost of the lesson")
-        lesson = Lesson.create(name, teacher, instrument, date_time, duration, cost)
+        lesson = Lesson.create(name, teacher, instrument, date_time=date_time, duration=duration, cost=cost)
 
         self.__handler.modify_lesson(lesson)
 
@@ -170,7 +181,7 @@ class App:
             self.__run()
         except Exception:
             print('Something went horribly wrong.')
-            #print_exc()
+            # print_exc()
 
 
 def main():

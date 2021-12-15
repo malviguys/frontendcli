@@ -1,5 +1,5 @@
 from dataclasses import InitVar, dataclass, field
-from typing import Any, re
+from typing import Any
 
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
