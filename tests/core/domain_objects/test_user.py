@@ -39,6 +39,3 @@ def test_username_no_special_chars_inside():
 def test_user_default_not_admin():
     user = User.create('Username', 'ImmaToken123')
     assert str(user.username) == 'Username' and user.token == 'ImmaToken123' and user.is_admin is False
-
-
-# TODO: tests for token

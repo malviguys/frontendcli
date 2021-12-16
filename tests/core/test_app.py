@@ -173,7 +173,6 @@ def test_create_lesson(mocked_print, mocked_input):
             mocked_create_lesson.return_value = True
             with patch('builtins.open', mock_open()):
                 App().run()
-                # Lesson "Lesson" with Hall Ruuuh for GUITAR on 2022-02-08 10:00:00 for 2.0 hours and 80.00€ created successfully!
                 mocked_print.assert_any_call('Lesson "My Lesson" with Myself Thatsit for GUITAR on 2022-03-08 10:00:00 for '
                                              '2.0 hours and 80.00€ created successfully!\n')
                 mocked_input.assert_called()
