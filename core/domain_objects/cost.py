@@ -2,8 +2,9 @@ from dataclasses import InitVar, dataclass, field
 from typing import Any
 from typeguard import typechecked
 from valid8 import validate
-from validation.dataclasses import validate_dataclass
 import re
+
+from core.validation.dataclasses import validate_dataclass
 
 
 @typechecked
