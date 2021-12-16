@@ -4,10 +4,10 @@ from typeguard import typechecked
 from valid8 import validate
 import re
 
-from core.validation.dataclasses import validate_dataclass
+from validation.dataclasses import validate_dataclass
 
 
-@typechecked
+#@typechecked
 @dataclass(frozen=True, order=True)
 class Cost:
 	value_in_cents: int
@@ -25,7 +25,7 @@ class Cost:
 	__parse_pattern = re.compile(r'(?P<euro>\d{1,6})\.(?P<cents>\d{1,2})')
 
 	def __post_init__(self, create_key):
-		validate('create_key', create_key, equals=self.__create_key)
+		validate('Cost.create_key', create_key, equals=self.__create_key)
 		validate_dataclass(self)
 		validate('value_in_cents', self.value_in_cents, min_value=0, max_value=Cost.__max_value_all)
 	

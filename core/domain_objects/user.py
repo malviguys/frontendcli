@@ -1,14 +1,15 @@
 from dataclasses import InitVar, dataclass, field
+import json
 from typing import Any
 
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
 
-from core.validation.dataclasses import validate_dataclass
-from core.validation.regex import pattern
+from validation.dataclasses import validate_dataclass
+from validation.regex import pattern
 
 
-@typechecked
+#@typechecked
 @dataclass(frozen=True, order=True)
 class Username:
     value: str
@@ -28,6 +29,7 @@ class Username:
 @typechecked
 @dataclass(frozen=True)
 class User:
+    user_id: int
     username: Username
     token: str
     is_admin: bool = field(default=False)
@@ -36,7 +38,7 @@ class User:
     __create_key = object()
 
     def __post_init__(self, create_key):
-        validate('create_key', create_key, equals=self.__create_key)
+        validate('User.create_key', create_key, equals=self.__create_key)
         validate_dataclass(self)
 
     @staticmethod
@@ -52,8 +54,14 @@ class Student(User):
 
 @dataclass(frozen=True, order=True)
 class Teacher(User):
-    pass
+    teacher_id: int = field(default=-1)
 
+    def as_json(self):
+        return json.dumps({
+            'id': self.teacher_id,
+            'name': self.username,
+            'user': self.user_id
+        })
 
 @dataclass(frozen=True, order=True)
 class Admin(User):
