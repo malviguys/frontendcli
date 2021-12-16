@@ -2,8 +2,8 @@ import pytest
 import datetime
 from valid8 import ValidationError
 
-from domain_objects.cost import Cost
-from domain_objects.lesson import Lesson, Instrument
+from core.domain_objects.cost import Cost
+from core.domain_objects.lesson import Lesson, Instrument
 
 
 @pytest.fixture

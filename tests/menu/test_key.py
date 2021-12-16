@@ -1,7 +1,7 @@
 import pytest
 from valid8 import ValidationError
 
-from menu.menu import Key
+from core.menu.menu import Key
 
 
 def test_create_key():

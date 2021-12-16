@@ -1,7 +1,7 @@
 import pytest
 from valid8 import ValidationError
 
-from menu.menu import Description
+from core.menu.menu import Description
 
 
 def test_create_description():

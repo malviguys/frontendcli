@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from valid8 import ValidationError
 
-from menu.menu import Menu, Description, Entry
+from core.menu.menu import Menu, Description, Entry
 
 
 def test_create_menu_without_exit_fails():

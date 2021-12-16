@@ -4,10 +4,10 @@ from http.client import responses
 import responses
 import pytest
 
-from domain_objects.cost import Cost
-from domain_objects.lesson import Lesson, Instrument
-from domain_objects.user import User, Student, Username
-from menu.handler import Handler, API_SERVER_ADDRESS
+from core.domain_objects.cost import Cost
+from core.domain_objects.lesson import Lesson, Instrument
+from core.domain_objects.user import User, Student, Username
+from core.menu.handler import Handler, API_SERVER_ADDRESS
 
 ENDPOINT_PRE = "/api/v1"
 
@@ -43,7 +43,7 @@ def test_cannot_create_handler_without_user():
 def test_fetch_lessons_200(handler):
     responses.add(**{
         'method': responses.GET,
-        'url': API_SERVER_ADDRESS + '/lessons',
+        'url': API_SERVER_ADDRESS + '/lessons/',
         'body': '{"OK": "Working fine"}',
         'status': 200,
         'content_type': 'application/json',
@@ -55,7 +55,7 @@ def test_fetch_lessons_200(handler):
 def test_fetch_lessons_fails(handler):
     responses.add(**{
         'method': responses.GET,
-        'url': API_SERVER_ADDRESS + '/lessons',
+        'url': API_SERVER_ADDRESS + '/lessons/',
         'body': '{"UNAUTHORIZED": "You are not allowed to see this content"}',
         'status': 401,
         'content_type': 'application/json',
@@ -67,7 +67,7 @@ def test_fetch_lessons_fails(handler):
 def test_create_lesson(handler, lesson):
     responses.add(**{
         'method': responses.POST,
-        'url': API_SERVER_ADDRESS + '/lessons',
+        'url': API_SERVER_ADDRESS + '/lessons/',
         'body': '{"CREATED": "Congrats! A new lesson!"}',
         'status': 204,
         'content_type': 'application/json',
@@ -79,7 +79,7 @@ def test_create_lesson(handler, lesson):
 def test_create_lesson_fails(handler, lesson):
     responses.add(**{
         'method': responses.POST,
-        'url': API_SERVER_ADDRESS + '/lessons',
+        'url': API_SERVER_ADDRESS + '/lessons/',
         'body': '{"UNAUTHORIZED": "You can\'t do nothing"}',
         'status': 401,
         'content_type': 'application/json',
@@ -115,7 +115,7 @@ def test_modify_lesson_fails(handler, lesson):
 def test_cancel_lesson(handler, lesson):
     responses.add(**{
         'method': responses.DELETE,
-        'url': API_SERVER_ADDRESS + '/lessons',
+        'url': API_SERVER_ADDRESS + '/lessons/SSD',
         'body': '{"OK": "Put into the bin"}',
         'status': 200,
         'content_type': 'application/json',
@@ -127,7 +127,7 @@ def test_cancel_lesson(handler, lesson):
 def test_cancel_lesson_fails(handler, lesson):
     responses.add(**{
         'method': responses.DELETE,
-        'url': API_SERVER_ADDRESS + '/lessons',
+        'url': API_SERVER_ADDRESS + '/lessons/SSD',
         'body': '{"UNAUTHORIZED": "Don\'t you dare messing with admin stuff"}',
         'status': 401,
         'content_type': 'application/json',
@@ -163,7 +163,7 @@ def test_book_lesson_fails(handler, lesson):
 def test_cancel_booking(handler, lesson):
     responses.add(**{
         'method': responses.DELETE,
-        'url': API_SERVER_ADDRESS + '/booking/',
+        'url': API_SERVER_ADDRESS + '/booking/SSD',
         'body': '{"OK": "You are free"}',
         'status': 200,
         'content_type': 'application/json',
@@ -175,7 +175,7 @@ def test_cancel_booking(handler, lesson):
 def test_cancel_booking_fails(handler, lesson):
     responses.add(**{
         'method': responses.DELETE,
-        'url': API_SERVER_ADDRESS + '/booking/',
+        'url': API_SERVER_ADDRESS + '/booking/SSD',
         'body': '{"UNAUTHORIZED": "You chose - you must attend!"}',
         'status': 401,
         'content_type': 'application/json',

@@ -1,7 +1,7 @@
 import pytest
 from valid8 import ValidationError
 
-from domain_objects.user import Username, User
+from core.domain_objects.user import Username, User
 
 
 def test_username():

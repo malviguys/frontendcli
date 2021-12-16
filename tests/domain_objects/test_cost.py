@@ -1,7 +1,7 @@
 import pytest
 from valid8 import ValidationError
 
-from domain_objects.cost import Cost
+from core.domain_objects.cost import Cost
 
 
 def test_create_cost_maximum_euros():
