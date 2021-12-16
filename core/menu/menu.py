@@ -5,11 +5,11 @@ from typeguard import typechecked
 from valid8 import validate
 
 
-from validation.dataclasses import validate_dataclass
-from validation.regex import pattern
+from core.validation.dataclasses import validate_dataclass
+from core.validation.regex import pattern
 
 
-# @typechecked
+@typechecked
 @dataclass(frozen=True, order=True)
 class Description:
     value: str
@@ -35,7 +35,7 @@ class Key:
         return self.value
 
 
-# @typechecked
+@typechecked
 @dataclass(frozen=True)
 class Entry:
     key: Key
@@ -51,7 +51,7 @@ class Entry:
         return Entry(Key(key), Description(description), on_selected, is_exit)
 
 
-# @typechecked
+@typechecked
 @dataclass(frozen=True)
 class Menu:
     description: Description

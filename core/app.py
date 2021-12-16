@@ -1,11 +1,11 @@
 import datetime
 import requests
 
-from domain_objects.cost import Cost
-from domain_objects.lesson import Lesson, Instrument
-from domain_objects.user import Admin, Student, Teacher, User, Username
-from menu.handler import Handler, API_SERVER_ADDRESS
-from menu.menu import Description, Entry, Menu
+from core.domain_objects.cost import Cost
+from core.domain_objects.lesson import Lesson, Instrument
+from core.domain_objects.user import Admin, Student, Teacher, User, Username
+from core.menu.handler import Handler, API_SERVER_ADDRESS
+from core.menu.menu import Description, Entry, Menu
 
 ADMIN_PAGE = ''
 
@@ -33,9 +33,7 @@ class App:
 
     def __setup_lesson(self):
         name = input("Insert the name of the lesson:")
-        # instrument = input("Insert the instrument that'll be studied:")
-        # instrument = { "id": 1 }
-        instrument = Instrument.GUITAR
+        instrument = input("Insert the instrument that'll be studied:")
         teacher = input("Insert the teacher of the lesson:")
         user_dt_input = input("Insert the date and the time of the lesson: ~ format: {DD-MM-YYYY hh:mm} ~")
         date_split = user_dt_input.split(' ')[0]
@@ -45,10 +43,10 @@ class App:
                                       minute=int(time_split.split(':')[1]))
         duration = datetime.timedelta(minutes=int(input("Insert the duration (in minutes) of the lesson:")))
         cost = input("Insert the cost of the lesson: ~ format: {00.00} ~")
-        print(f'{name}, {instrument.name}, {teacher}, {date_time}, {duration}, {cost}')
-        
-        if any(x for x in Instrument if x == instrument):
-            lesson = Lesson.create(name, teacher, instrument, date_time=date_time,
+        print(f'{name}, {instrument}, {teacher}, {date_time}, {duration}, {cost}')
+
+        if any(x for x in Instrument if x.name == instrument.upper()):
+            lesson = Lesson.create(name, teacher, Instrument[instrument.upper()], date_time=date_time,
                                    duration=duration, cost=Cost.parse(cost))
             return lesson
         else:
@@ -118,7 +116,6 @@ class App:
             .build()
 
     def __print_lessons(self) -> None:
-        # TODO: do a better format
         lessons_json = self.__handler.fetch_lessons()
         print(lessons_json)
 
@@ -129,7 +126,7 @@ class App:
                 print(
                     f'Lesson "{lesson.lesson_name}" with {lesson.teacher} for {lesson.instrument.name} on {lesson.date_time} for '
                     f'{lesson.duration.seconds / 60 / 60} hours and {lesson.cost}€ created successfully!\n')
-                return lesson
+                # return lesson
             else:
                 print('The lesson could not be created!\n')
 

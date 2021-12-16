@@ -4,11 +4,11 @@ from typing import Any
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
 
-from validation.dataclasses import validate_dataclass
-from validation.regex import pattern
+from core.validation.dataclasses import validate_dataclass
+from core.validation.regex import pattern
 
 
-# @typechecked
+@typechecked
 @dataclass(frozen=True, order=True)
 class Username:
     value: str
@@ -18,14 +18,14 @@ class Username:
         # The pattern will ensure that the username is between 3 and 20 chars long and does not contain underscores
         # and dot nor consequently nor at both ends
         # See https://stackoverflow.com/a/12019115/10301322 for more details
-        validate('Username.value', self.value, min_len=2, max_len=20,
+        validate('Username.value', self.value, min_len=3, max_len=20,
                  custom=pattern(r'^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$'))
 
     def __str__(self) -> str:
         return self.value
 
 
-# @typechecked
+@typechecked
 @dataclass(frozen=True)
 class User:
     username: Username
@@ -45,19 +45,16 @@ class User:
         return User(Username(username), token, is_admin, User.__create_key)
 
 
-# @typechecked
 @dataclass(frozen=True, order=True)
 class Student(User):
     pass
 
 
-# @typechecked
 @dataclass(frozen=True, order=True)
 class Teacher(User):
     pass
 
 
-# @typechecked
 @dataclass(frozen=True, order=True)
 class Admin(User):
     pass

@@ -4,17 +4,14 @@ import requests
 from dataclasses import dataclass
 from typeguard import typechecked
 
-from domain_objects.user import Student, User
-from domain_objects.lesson import Lesson
-from validation.dataclasses import validate_dataclass
+from core.domain_objects.user import Student, User
+from core.domain_objects.lesson import Lesson
+from core.validation.dataclasses import validate_dataclass
 
 API_SERVER_ADDRESS = 'http://localhost:8000/api/v1'
 
-# TODO: Handle the response of the backend and eventual error. Display error messages and such
 
-# @typechecked
-
-
+@typechecked
 @dataclass(frozen=True)
 class Handler:
     user: User
