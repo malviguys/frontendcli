@@ -5,11 +5,11 @@ from typeguard import typechecked
 from valid8 import validate
 
 
-from core.validation.dataclasses import validate_dataclass
-from core.validation.regex import pattern
+from validation.dataclasses import validate_dataclass
+from validation.regex import pattern
 
 
-@typechecked
+##@typechecked
 @dataclass(frozen=True, order=True)
 class Description:
     value: str
@@ -22,7 +22,7 @@ class Description:
         return self.value
 
 
-# @typechecked
+# #@typechecked
 @dataclass(frozen=True, order=True)
 class Key:
     value: str
@@ -35,7 +35,7 @@ class Key:
         return self.value
 
 
-@typechecked
+##@typechecked
 @dataclass(frozen=True)
 class Entry:
     key: Key
@@ -51,7 +51,7 @@ class Entry:
         return Entry(Key(key), Description(description), on_selected, is_exit)
 
 
-@typechecked
+##@typechecked
 @dataclass(frozen=True)
 class Menu:
     description: Description
@@ -61,11 +61,11 @@ class Menu:
     create_key: InitVar[Any] = field(default=None)
 
     def __post_init__(self, create_key: Any):
-        validate('create_key', create_key, custom=Menu.Builder.is_valid_key)
+        validate('Menu.create_key', create_key, custom=Menu.Builder.is_valid_key)
         validate_dataclass(self)
 
     def _add_entry(self, value: Entry, create_key: Any) -> None:
-        validate('create_key', create_key, custom=Menu.Builder.is_valid_key)
+        validate('Menu.Builder.create_key', create_key, custom=Menu.Builder.is_valid_key)
         validate('value.key', value.key, custom=lambda v: v not in self.__key2entry)
         self.__entries.append(value)
         self.__key2entry[value.key] = value
@@ -110,7 +110,7 @@ class Menu:
             if is_exit:
                 return
     
-    # @typechecked
+    # #@typechecked
     @dataclass()
     class Builder:
         __menu: Optional['Menu']

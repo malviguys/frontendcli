@@ -1,11 +1,14 @@
 import datetime
 import requests
+import subprocess
 
-from core.domain_objects.cost import Cost
-from core.domain_objects.lesson import Lesson, Instrument
-from core.domain_objects.user import Admin, Student, Teacher, User, Username
-from core.menu.handler import Handler, API_SERVER_ADDRESS
-from core.menu.menu import Description, Entry, Menu
+from domain_objects.cost import Cost
+from domain_objects.lesson import Lesson, Instrument
+from domain_objects.user import Admin, Student, Teacher, User, Username
+from menu.handler import Handler, API_SERVER_ADDRESS
+from menu.menu import Description, Entry, Menu
+
+from getpass import getpass
 
 ADMIN_PAGE = ''
 
@@ -57,7 +60,7 @@ class App:
     def __do_login(self):
         while True:
             user_name = input('Insert your username:')
-            pwd = input('Insert your password:')
+            pwd = getpass('Insert your password:')
 
             payload = dict(username=user_name, password=pwd)
 
@@ -168,6 +171,8 @@ class App:
         self.__menu.run()
 
     def run(self) -> None:
+        # Updating the requirements
+        subprocess.run(["pip", "install", "-r", ".\\requirements.txt"])
         try:
             self.__run()
         except Exception as e:

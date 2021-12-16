@@ -6,21 +6,33 @@ from enum import Enum, unique
 from typing import Any, List
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
+from json import dumps
 
-from core.domain_objects.user import Student
-from core.domain_objects.cost import Cost
-from core.validation.dataclasses import validate_dataclass
-
-
-@unique # Avoid to have aliases in the `Instrument` enum.
-class Instrument(Enum):
-    GUITAR = 0
-    PIANO = 1
-    DRUM = 2
-    TRIANGLE = 3
+from domain_objects.user import Student
+from domain_objects.cost import Cost
+from validation.dataclasses import validate_dataclass
 
 
-@typechecked
+#@typechecked
+@dataclass(frozen=True, order=True)
+class Instrument:
+    id: int
+    name: str
+
+    def __post_init__(self):
+        validate('Instrument.id', self.id, min_value=0, max_value=100)
+        validate('Instrument.name', self.name)
+        validate_dataclass(self)
+
+    def as_json(self):
+        return dumps({
+            'id': self.id,
+            'name': self.name
+        })
+
+
+
+#@typechecked
 @dataclass(frozen=True)
 class Lesson:
     _lesson_name: str
@@ -49,7 +61,7 @@ class Lesson:
     __duration_max = 4
 
     def __post_init__(self, create_key):
-        validate('create_key', create_key, equals=self.__create_key)
+        validate('Lesson.create_key', create_key, equals=self.__create_key)
         validate_dataclass(self)
 
     @staticmethod

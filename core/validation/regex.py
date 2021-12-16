@@ -3,7 +3,7 @@ from typeguard import typechecked
 import re
 
 
-# @typechecked
+# #@typechecked
 def pattern(regex: str) -> Callable[[str], bool]:
 	r = re.compile(regex)
 

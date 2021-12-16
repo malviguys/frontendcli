@@ -4,14 +4,14 @@ import requests
 from dataclasses import dataclass
 from typeguard import typechecked
 
-from core.domain_objects.user import Student, User
-from core.domain_objects.lesson import Lesson
-from core.validation.dataclasses import validate_dataclass
+from domain_objects.user import Student, User
+from domain_objects.lesson import Lesson
+from validation.dataclasses import validate_dataclass
 
 API_SERVER_ADDRESS = 'http://localhost:8000/api/v1'
 
 
-@typechecked
+#@typechecked
 @dataclass(frozen=True)
 class Handler:
     user: User
@@ -37,15 +37,8 @@ class Handler:
     def create_lesson(self, lesson: Lesson):
         payload = {
             'name': lesson.lesson_name,
-            "instrument": {
-                "id": 1,
-                "name": "Guitar"
-            },
-            "teacher": {
-                "id": 1,
-                "name": "Teacher 1",
-                "user": 3
-            },
+            "instrument": lesson.instrument.as_json(),
+            "teacher": self.user.as_json(),
             'date_time': lesson.date_time.strftime("%Y-%m-%dT%H:%M:%S"),
             'duration': str(lesson.duration),
             'cost': str(lesson.cost),
@@ -88,6 +81,14 @@ class Handler:
         if not (response.status_code == 200 or response.status_code == 204):
             return False
         return True
+
+    def fetch_booking(self):
+        headers = {'Authorization': "Token " + self.user.token}
+        response = requests.get(
+            f'{API_SERVER_ADDRESS}/booking/', headers=headers)
+        if response.status_code != 200:
+            return None
+        return response.json()
 
     def book_lesson(self, lesson_name: str):
         payload = {'name': lesson_name, 'Token': self.user.token}
