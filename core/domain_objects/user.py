@@ -5,8 +5,8 @@ from typing import Any
 from typeguard import typechecked
 from valid8.entry_points_inline import validate
 
-from validation.dataclasses import validate_dataclass
-from validation.regex import pattern
+from core.validation.dataclasses import validate_dataclass
+from core.validation.regex import pattern
 
 
 #@typechecked

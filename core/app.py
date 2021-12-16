@@ -2,11 +2,11 @@ import datetime
 import requests
 import subprocess
 
-from domain_objects.cost import Cost
-from domain_objects.lesson import Lesson, Instrument
-from domain_objects.user import Admin, Student, Teacher, User, Username
-from menu.handler import Handler, API_SERVER_ADDRESS
-from menu.menu import Description, Entry, Menu
+from core.domain_objects.cost import Cost
+from core.domain_objects.lesson import Lesson, Instrument
+from core.domain_objects.user import Admin, Student, Teacher, User, Username
+from core.menu.handler import Handler, API_SERVER_ADDRESS
+from core.menu.menu import Description, Entry, Menu
 
 from getpass import getpass
 
@@ -56,22 +56,20 @@ class App:
             print("Sorry, the given instrument was not correct!\n")
             return None
 
-
     def __do_login(self):
         while True:
             user_name = input('Insert your username:')
-            pwd = getpass('Insert your password:')
+            pwd = input('Insert your password:')
 
             payload = dict(username=user_name, password=pwd)
 
             response = requests.post(f'{API_SERVER_ADDRESS}/auth/login/', data=payload)
-            print(response.status_code)
-            print(requests.codes.ok)
             if response.status_code != requests.codes.ok:
                 print("Invalid credential, please try again.\n")
                 continue
 
             token = response.json()['key']
+            # token = "hgjk"
             print('Successfully logged in!\n')
             return user_name, token
 
@@ -172,7 +170,7 @@ class App:
 
     def run(self) -> None:
         # Updating the requirements
-        subprocess.run(["pip", "install", "-r", ".\\requirements.txt"])
+        # subprocess.run(["pip", "install", "-r", "requirement.txt"])
         try:
             self.__run()
         except Exception as e:

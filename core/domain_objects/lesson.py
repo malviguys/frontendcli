@@ -8,9 +8,9 @@ from typeguard import typechecked
 from valid8.entry_points_inline import validate
 from json import dumps
 
-from domain_objects.user import Student
-from domain_objects.cost import Cost
-from validation.dataclasses import validate_dataclass
+from core.domain_objects.user import Student
+from core.domain_objects.cost import Cost
+from core.validation.dataclasses import validate_dataclass
 
 
 #@typechecked

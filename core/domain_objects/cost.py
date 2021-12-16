@@ -4,7 +4,7 @@ from typeguard import typechecked
 from valid8 import validate
 import re
 
-from validation.dataclasses import validate_dataclass
+from core.validation.dataclasses import validate_dataclass
 
 
 #@typechecked

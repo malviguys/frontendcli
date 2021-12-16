@@ -74,7 +74,7 @@ def test_app_asks_for_login(mocked_print):
 
 
 @responses.activate
-@patch('builtins.input', side_effect=['1', 'student', 'mypassword', '0'])
+@patch('builtins.input', side_effect=['1', 'student', 'myPassword', '0'])
 @patch('builtins.print')
 def test_student_login(mocked_print, mocked_input):
     responses.add(**{
